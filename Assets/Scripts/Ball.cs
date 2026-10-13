@@ -5,6 +5,13 @@ public class Ball : MonoBehaviour
 
     [SerializeField] private bool dead;
 
+    [SerializeField] private Collider coll;
+
+    private string thrownFrom;
+    public void setThrownFrom(string thrownFrom)
+    {
+        this.thrownFrom = thrownFrom;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,10 +46,15 @@ public class Ball : MonoBehaviour
                 pm.collectBall();
                 Destroy(gameObject);
             }
-            else if (!dead)
+            else if (!dead && (other.gameObject.name != thrownFrom))
             {
                 pm.takeHit();
             }
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        coll.excludeLayers = 0;
     }
 }

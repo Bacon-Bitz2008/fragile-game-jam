@@ -77,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
         if(ballCount > 0)
         {
             GameObject newBall = Instantiate(ball);
+            Ball b = newBall.GetComponent<Ball>();
+            b.setThrownFrom(gameObject.name);
             newBall.transform.position = transform.position;
             Rigidbody brb = newBall.GetComponent<Rigidbody>();
 
