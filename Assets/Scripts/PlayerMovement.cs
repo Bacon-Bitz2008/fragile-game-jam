@@ -16,6 +16,14 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private bool isP1;
 
+    private int ballCount;
+    public int getBallCount() {  return ballCount; }
+    private int maxBalls = 2;
+    public int getMaxBalls()
+    {
+        return maxBalls;
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -66,10 +74,26 @@ public class PlayerMovement : MonoBehaviour
 
     private void Shoot_performed(InputAction.CallbackContext context)
     {
-        GameObject newBall = Instantiate(ball);
-        newBall.transform.position = transform.position;
-        Rigidbody brb = newBall.GetComponent<Rigidbody>();
+        if(ballCount > 0)
+        {
+            GameObject newBall = Instantiate(ball);
+            newBall.transform.position = transform.position;
+            Rigidbody brb = newBall.GetComponent<Rigidbody>();
 
-        brb.AddForce(transform.forward * launchSpeed, ForceMode.Impulse);
+            brb.AddForce(transform.forward * launchSpeed, ForceMode.Impulse);
+
+            ballCount--;
+        }
+        
+    }
+
+    public void collectBall()
+    {
+        ballCount++;
+    }
+
+    public void takeHit()
+    {
+        print("oof");
     }
 }

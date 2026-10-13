@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 621031994628217659}
   - component: {fileID: 8477502577615485167}
   - component: {fileID: -7062756456403171797}
+  - component: {fileID: 1583979183139987523}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -255,3 +256,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &1583979183139987523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8505984395715004024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff6e7c126fc11794cbe5ef49c542fd5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  ball: {fileID: 3670523357480188666, guid: 35ddc797ce864c448b3b21ddd71644e9, type: 3}
+  launchSpeed: 20
+  speed: 5
+  isP1: 1
