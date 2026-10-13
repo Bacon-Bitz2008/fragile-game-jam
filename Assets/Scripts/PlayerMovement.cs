@@ -9,6 +9,11 @@ public class PlayerMovement : MonoBehaviour
     private Controls controls;
     private Rigidbody rb;
 
+    [SerializeField] GameObject ball;
+    [SerializeField] int launchSpeed;
+
+    [SerializeField] private int speed;
+
     [SerializeField] private bool isP1;
 
 
@@ -49,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Vector3 walkVector = new Vector3(walkInput.x, 0, walkInput.y);
-        transform.Translate(walkVector * Time.deltaTime, Space.World);
+        transform.Translate(walkVector * speed * Time.deltaTime, Space.World);
 
         if(walkVector != Vector3.zero)
         {
@@ -61,6 +66,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Shoot_performed(InputAction.CallbackContext context)
     {
-        print("shoot!");
+        GameObject newBall = Instantiate(ball);
+        newBall.transform.position = transform.position;
+        Rigidbody brb = newBall.GetComponent<Rigidbody>();
+
+        brb.AddForce(transform.forward * launchSpeed, ForceMode.Impulse);
     }
 }
