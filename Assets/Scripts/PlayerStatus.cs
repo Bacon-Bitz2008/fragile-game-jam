@@ -56,7 +56,7 @@ public class PlayerStatus : MonoBehaviour
       
 
         // IMPORTANT: Use the property, not health -= 10.
-        Health -= 10;
+        Health -= 25;
 
         if (health <= 0 && !dead)
             Die();
