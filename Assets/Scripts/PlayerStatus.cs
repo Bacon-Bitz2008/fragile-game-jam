@@ -23,11 +23,7 @@ public class PlayerStatus : MonoBehaviour
     private int playerID;
 
     //public int MaxHealth => maxHealth;
-    private void Start()
-    {
-        controls.Health.Enable();
-
-    }
+  
     public int Health
     {
         get => health;
@@ -49,9 +45,7 @@ public class PlayerStatus : MonoBehaviour
 
     private void Awake()
     {
-<<<<<<< HEAD
-       
-=======
+
 
         if (pm.getP1())
         {
@@ -61,7 +55,7 @@ public class PlayerStatus : MonoBehaviour
         {
             playerID = 1;
         }
->>>>>>> 39a02f0e116e8486dfd86f971717403f172d23e4
+
 
         // Find the crack effect first.
         if (crackEffect == null)
@@ -71,28 +65,25 @@ public class PlayerStatus : MonoBehaviour
         health = maxHealth;
         Health = maxHealth;
 
-<<<<<<< HEAD
 
-        controls.Health.Enable();
-        controls = new Controls();
-        controls.Health.Damage.performed += Damage_performed;
+
+      
        
-=======
->>>>>>> 39a02f0e116e8486dfd86f971717403f172d23e4
+
     }
 
     private void Update()
     {
 
-<<<<<<< HEAD
+
         Debug.Log("damage taken");
 
         
-        Health -= 25;
+       
 
         if (health <= 0 && !dead)
             Die();
-=======
+
         if(health <= 0)
         {
             gameSys.updateScore(playerID);
@@ -100,7 +91,7 @@ public class PlayerStatus : MonoBehaviour
             crackEffect.ResetCracks();
         }
 
->>>>>>> 39a02f0e116e8486dfd86f971717403f172d23e4
+
     }
 
 
