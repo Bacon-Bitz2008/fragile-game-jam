@@ -70,12 +70,14 @@ public class PlayerStatus : MonoBehaviour
         health = maxHealth;
         Health = maxHealth;
 
+
     }
 
     private void Update()
     {
 
         if (!gameSys.isGamePaused())
+
         {
 
             if (health <= 0 && !dead)
