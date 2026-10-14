@@ -16,6 +16,10 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private bool isP1;
 
+    [SerializeField] private PlayerStatus stat;
+
+    public bool getP1() { return isP1; }
+
     private int ballCount;
     public int getBallCount() {  return ballCount; }
     private int maxBalls = 2;
@@ -102,5 +106,6 @@ public class PlayerMovement : MonoBehaviour
     public void takeHit()
     {
         print("oof");
+        stat.Health--;
     }
 }
