@@ -44,7 +44,7 @@ public class CrackShatter3D : MonoBehaviour
 
     [Header("Testing")]
     [Tooltip("Press T to register a dodge (crack). Press R to reset. Turn off when you hook up real dodging.")]
-    [SerializeField] private bool enableTestKeys = true;
+    [SerializeField] private bool enableTestKeys = false;
 
     public System.Action OnShattered;
 

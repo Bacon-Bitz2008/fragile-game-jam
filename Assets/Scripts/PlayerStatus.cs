@@ -4,22 +4,23 @@ using UnityEngine.InputSystem;
 
 public class PlayerStatus : MonoBehaviour
 {
-    [SerializeField] private int maxHealth = 100;
 
 
     [SerializeField] private GameSystem gameSys;
     [SerializeField] private PlayerMovement pm;
 
 
-    //private int maxHealth = 3;
+    private int maxHealth = 3;
 
 
     [Tooltip("Assign CrackShatter3D here, or leave empty to find it automatically.")]
     [SerializeField] private CrackShatter3D crackEffect;
 
-    private Controls controls;
+
     private int health;
     private bool dead;
+
+    private int playerID;
 
     //public int MaxHealth => maxHealth;
 
@@ -44,6 +45,16 @@ public class PlayerStatus : MonoBehaviour
 
     private void Awake()
     {
+
+        if (pm.getP1())
+        {
+            playerID = 0;
+        }
+        else
+        {
+            playerID = 1;
+        }
+
         // Find the crack effect first.
         if (crackEffect == null)
             crackEffect = GetComponentInChildren<CrackShatter3D>();
@@ -52,23 +63,19 @@ public class PlayerStatus : MonoBehaviour
         health = maxHealth;
         Health = maxHealth;
 
-        controls = new Controls();
-        controls.Health.Damage.performed += Damage_performed;
-        controls.Health.Enable();
     }
 
-    private void Damage_performed(InputAction.CallbackContext context)
+    private void Update()
     {
-        if (dead) return;
-
-      
-
-        // IMPORTANT: Use the property, not health -= 10.
-        Health -= 10;
-
-        if (health <= 0 && !dead)
-            Die();
+        if(health <= 0)
+        {
+            gameSys.updateScore(playerID);
+            health = maxHealth;
+            crackEffect.ResetCracks();
+        }
     }
+
+
 
     private void Die()
     {
@@ -76,12 +83,5 @@ public class PlayerStatus : MonoBehaviour
         Debug.Log("Dead!");
     }
 
-    private void OnDestroy()
-    {
-        if (controls != null)
-        {
-            controls.Health.Damage.performed -= Damage_performed;
-            controls.Dispose();
-        }
-    }
+
 }
