@@ -34,11 +34,16 @@ public class Ball : MonoBehaviour
         }
     }
 
+    public bool isDead
+    {
+        get { return dead; }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.layer == 6)
         {
+           
             PlayerMovement pm = other.GetComponent<PlayerMovement>();
 
             if (dead && (pm.getBallCount() < pm.getMaxBalls()))

@@ -67,12 +67,14 @@ public class PlayerStatus : MonoBehaviour
 
     private void Update()
     {
+
         if(health <= 0)
         {
             gameSys.updateScore(playerID);
             health = maxHealth;
             crackEffect.ResetCracks();
         }
+
     }
 
 
