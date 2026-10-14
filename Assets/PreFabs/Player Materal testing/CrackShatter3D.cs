@@ -6,13 +6,18 @@ using UnityEngine.InputSystem;
 #endif
 
 /// <summary>
-/// Progressive cracks + shatter for a 3D character.
-/// Put on the player, assign the MeshRenderer or SkinnedMeshRenderer that uses Custom/URP/CrackLit3D.
+/// Progressive cracks + shatter for a 3D character (MeshRenderer or SkinnedMeshRenderer).
+/// Put on the player, assign the renderer that uses Custom/URP/CrackLit3D.
 /// Call RegisterDodge() (or TakeHit(worldPoint)) from your own code.
 ///
+/// How it works: at startup the script clones the renderer's mesh and bakes two things into it,
+/// the vertex position normalised to the model's size (UV3) and a "growth order" (UV4).
+/// The shader reads those, so it never depends on object-space scale or skinning quirks.
+/// REQUIREMENT: Read/Write must be enabled on the model's import settings.
+///
 /// Shatter modes:
-///  - preFracturedPrefab assigned: swaps to your pre-broken model (best quality).
-///  - otherwise: cuts the current mesh into chunks procedurally (needs Read/Write enabled on the mesh).
+///  - preFracturedPrefab assigned: swaps to your pre-broken model.
+///  - otherwise: cuts the mesh into chunks procedurally.
 /// </summary>
 public class CrackShatter3D : MonoBehaviour
 {
@@ -37,65 +42,99 @@ public class CrackShatter3D : MonoBehaviour
     [Tooltip("Layer shards live on. Set it to collide with the ground but not the player.")]
     [SerializeField] private string shardLayerName = "Default";
 
-    private static readonly int CrackColorId =
-    Shader.PropertyToID("_CrackColor");
-
-    private static readonly int CrackEmissionId =
-        Shader.PropertyToID("_CrackEmission");
-
+    [Header("Testing")]
+    [Tooltip("Press T to register a dodge (crack). Press R to reset. Turn off when you hook up real dodging.")]
+    [SerializeField] private bool enableTestKeys = true;
 
     public System.Action OnShattered;
 
     private static readonly int DamageId = Shader.PropertyToID("_Damage");
-    private static readonly int ImpactId = Shader.PropertyToID("_ImpactPointOS");
-    private static readonly int RadiusId = Shader.PropertyToID("_ImpactRadius");
-    private static readonly int OffsetId = Shader.PropertyToID("_ObjectOffset");
 
     private Material[] mats;
+    private Mesh workMesh;                    // our private clone with crack data baked in
+    private Vector3[] meshVerts;              // vertex positions in mesh space
+    private List<Vector3> patternList;        // positions normalised to model size  -> UV3
+    private List<Vector2> orderList;          // growth order, 0 at impact, 1 farthest -> UV4
+
     private int hits;
     private float damage;
     private bool shattered;
     private bool originSet;
+    private bool ready;
     private Coroutine growRoutine;
+
+    // ------------------------------------------------------------------ Setup
 
     private void Awake()
     {
-        if (targetRenderer == null)
-            targetRenderer = GetComponentInChildren<Renderer>();
+        if (targetRenderer == null) targetRenderer = GetComponentInChildren<Renderer>();
+        ready = PrepareMesh();
+        mats = targetRenderer.materials;   // per-instance copies
+        SetFloatAll(DamageId, 0f);
+    }
 
-        if (targetRenderer == null)
+    private void OnDestroy()
+    {
+        if (workMesh != null) Destroy(workMesh);
+    }
+
+    private bool PrepareMesh()
+    {
+        Mesh shared = GetSharedMesh();
+        if (shared == null || !shared.isReadable)
         {
-            Debug.LogError(
-                "CrackShatter3D: No target Renderer assigned or found."
-            );
-            enabled = false;
-            return;
+            Debug.LogError("CrackShatter3D: mesh missing or not readable. Select the model asset and enable Read/Write on its Model import tab.", this);
+            return false;
         }
 
-        // Create material instances for this object.
-        mats = targetRenderer.materials;
+        // Private copy so other instances of the same model aren't affected
+        workMesh = Instantiate(shared);
+        workMesh.name = shared.name + " (Cracks)";
+        if (targetRenderer is SkinnedMeshRenderer smr) smr.sharedMesh = workMesh;
+        else targetRenderer.GetComponent<MeshFilter>().sharedMesh = workMesh;
 
-        foreach (var m in mats)
+        meshVerts = workMesh.vertices;
+        int n = meshVerts.Length;
+
+        Vector3 min = meshVerts[0], max = meshVerts[0];
+        for (int i = 1; i < n; i++)
         {
-            if (m.HasProperty(CrackColorId))
-                m.SetColor(CrackColorId, Color.white);
-
-            if (m.HasProperty(CrackEmissionId))
-                m.SetColor(
-                    CrackEmissionId,
-                    new Color(2f, 2f, 2f, 1f)
-                );
-
-            if (m.HasProperty(DamageId))
-                m.SetFloat(DamageId, 0f);
+            min = Vector3.Min(min, meshVerts[i]);
+            max = Vector3.Max(max, meshVerts[i]);
         }
+        Vector3 size = max - min;
+        float maxExtent = Mathf.Max(size.x, size.y, size.z, 1e-5f);
+
+        patternList = new List<Vector3>(n);
+        orderList = new List<Vector2>(n);
+        for (int i = 0; i < n; i++)
+        {
+            patternList.Add((meshVerts[i] - min) / maxExtent);
+            orderList.Add(new Vector2(1f, 0f));
+        }
+        workMesh.SetUVs(2, patternList);   // UV3
+        workMesh.SetUVs(3, orderList);     // UV4
+        return true;
+    }
+
+    /// <summary>Growth order = distance from the origin vertex, scaled so the farthest vertex is 1.</summary>
+    private void SetCrackOrigin(int vertexIndex)
+    {
+        Vector3 o = patternList[vertexIndex];
+        int n = patternList.Count;
+
+        float maxD = 1e-5f;
+        var d = new float[n];
+        for (int i = 0; i < n; i++)
+        {
+            d[i] = Vector3.Distance(patternList[i], o);
+            if (d[i] > maxD) maxD = d[i];
+        }
+        for (int i = 0; i < n; i++) orderList[i] = new Vector2(d[i] / maxD, 0f);
+        workMesh.SetUVs(3, orderList);
     }
 
     // ------------------------------------------------------------------ Testing
-
-    [Header("Testing")]
-    [Tooltip("Press T to register a dodge (crack). Press R to reset. Turn off when you hook up real dodging.")]
-    [SerializeField] private bool enableTestKeys = true;
 
     private void Update()
     {
@@ -121,15 +160,31 @@ public class CrackShatter3D : MonoBehaviour
 
     // ------------------------------------------------------------------ Hits
 
-    /// <summary>Call this each time the player dodges. Impact point is a random spot on the body.</summary>
+    /// <summary>Call this each time the player dodges. The crack starts at a random point on the body.</summary>
     public void RegisterDodge()
     {
-        Bounds b = targetRenderer.bounds;
-        Vector3 p = b.center + Vector3.Scale(Random.insideUnitSphere, b.extents) * 0.8f;
-        TakeHit(p);
+        if (!ready) return;
+        int vi = Random.Range(0, meshVerts.Length);
+        Vector3 world = targetRenderer.transform.TransformPoint(meshVerts[vi]);
+        Hit(vi, world);
     }
 
+    /// <summary>Hit at a specific world point (e.g. where an attack landed).</summary>
     public void TakeHit(Vector3 worldImpact)
+    {
+        if (!ready) return;
+        Vector3 local = targetRenderer.transform.InverseTransformPoint(worldImpact);
+        int best = 0;
+        float bestD = float.MaxValue;
+        for (int i = 0; i < meshVerts.Length; i++)
+        {
+            float d = (meshVerts[i] - local).sqrMagnitude;
+            if (d < bestD) { bestD = d; best = i; }
+        }
+        Hit(best, worldImpact);
+    }
+
+    private void Hit(int originVertex, Vector3 worldPoint)
     {
         if (shattered) return;
         hits++;
@@ -138,20 +193,12 @@ public class CrackShatter3D : MonoBehaviour
         if (!originSet)
         {
             originSet = true;
-            Vector3 os = targetRenderer.transform.InverseTransformPoint(worldImpact);
-            Mesh shared = GetSharedMesh();
-            float radius = shared != null ? shared.bounds.size.magnitude : 2f;
-            foreach (var m in mats)
-            {
-                if (!m.HasProperty(ImpactId)) continue;
-                m.SetVector(ImpactId, os);
-                m.SetFloat(RadiusId, radius);
-            }
+            SetCrackOrigin(originVertex);
         }
 
         float target = Mathf.Clamp01((float)hits / maxHits);
         if (growRoutine != null) StopCoroutine(growRoutine);
-        growRoutine = StartCoroutine(GrowCracks(target, hits >= maxHits, worldImpact));
+        growRoutine = StartCoroutine(GrowCracks(target, hits >= maxHits, worldPoint));
 
         if (hitStopTime > 0f) StartCoroutine(HitStop());
         // Hook your camera shake here, scaled by `hits`.
@@ -187,6 +234,7 @@ public class CrackShatter3D : MonoBehaviour
 
     private void SetFloatAll(int id, float v)
     {
+        if (mats == null) return;
         foreach (var m in mats) if (m.HasProperty(id)) m.SetFloat(id, v);
     }
 
@@ -222,37 +270,43 @@ public class CrackShatter3D : MonoBehaviour
 
     private void SpawnProceduralShards(Vector3 worldImpact)
     {
+        if (!ready) return;
         Transform t = targetRenderer.transform;
-        Mesh src = GetShatterMesh(out bool isTemp);
-        if (src == null || !src.isReadable)
+
+        // Positions/normals: the current animated pose for skinned meshes, otherwise the mesh itself.
+        // Everything else (UVs, crack data, triangles) comes from workMesh; vertex order is identical.
+        Mesh posSrc = workMesh;
+        bool isTemp = false;
+        if (targetRenderer is SkinnedMeshRenderer smr)
         {
-            Debug.LogWarning("CrackShatter3D: mesh missing or not readable. Enable Read/Write on the model import settings.");
-            if (isTemp && src != null) Destroy(src);
-            return;
+            posSrc = new Mesh();
+            smr.BakeMesh(posSrc);
+            isTemp = true;
         }
 
-        Vector3[] verts = src.vertices;
-        Vector3[] norms = src.normals;
-        Vector2[] uvs = src.uv;
+        Vector3[] verts = posSrc.vertices;
+        Vector3[] norms = posSrc.normals;
+        Vector2[] uvs = workMesh.uv;
         bool hasN = norms.Length == verts.Length;
         bool hasUV = uvs.Length == verts.Length;
 
-        src.RecalculateBounds();
-        Bounds b = src.bounds;
+        Vector3 bmin = verts[0], bmax = verts[0];
+        foreach (var v in verts) { bmin = Vector3.Min(bmin, v); bmax = Vector3.Max(bmax, v); }
+        Vector3 bsize = bmax - bmin;
         Vector3 cell = new Vector3(
-            Mathf.Max(b.size.x / shardGrid.x, 1e-5f),
-            Mathf.Max(b.size.y / shardGrid.y, 1e-5f),
-            Mathf.Max(b.size.z / shardGrid.z, 1e-5f));
+            Mathf.Max(bsize.x / shardGrid.x, 1e-5f),
+            Mathf.Max(bsize.y / shardGrid.y, 1e-5f),
+            Mathf.Max(bsize.z / shardGrid.z, 1e-5f));
 
         // 1) Group triangles into chunks by which grid cell their centre falls in (per submesh)
         var clusters = new Dictionary<(int, int, int, int), List<int>>();
-        for (int sub = 0; sub < src.subMeshCount; sub++)
+        for (int sub = 0; sub < workMesh.subMeshCount; sub++)
         {
-            int[] tris = src.GetTriangles(sub);
+            int[] tris = workMesh.GetTriangles(sub);
             for (int i = 0; i < tris.Length; i += 3)
             {
                 Vector3 c = (verts[tris[i]] + verts[tris[i + 1]] + verts[tris[i + 2]]) / 3f;
-                Vector3 rel = c - b.min;
+                Vector3 rel = c - bmin;
                 int cx = Mathf.Clamp(Mathf.FloorToInt(rel.x / cell.x), 0, shardGrid.x - 1);
                 int cy = Mathf.Clamp(Mathf.FloorToInt(rel.y / cell.y), 0, shardGrid.y - 1);
                 int cz = Mathf.Clamp(Mathf.FloorToInt(rel.z / cell.z), 0, shardGrid.z - 1);
@@ -272,27 +326,34 @@ public class CrackShatter3D : MonoBehaviour
         {
             int sub = kv.Key.Item1;
             List<int> idx = kv.Value;
+            int n = idx.Count;
 
             Vector3 center = Vector3.zero;
             foreach (int vi in idx) center += verts[vi];
-            center /= idx.Count;
+            center /= n;
 
-            int n = idx.Count;
             var sv = new Vector3[n];
             var sn = new Vector3[n];
             var suv = new Vector2[n];
+            var spat = new List<Vector3>(n);
+            var sord = new List<Vector2>(n);
             var st = new int[n];
             for (int i = 0; i < n; i++)
             {
-                sv[i] = verts[idx[i]] - center;      // recentre so the shard rotates about itself
-                if (hasN) sn[i] = norms[idx[i]];
-                if (hasUV) suv[i] = uvs[idx[i]];
+                int vi = idx[i];
+                sv[i] = verts[vi] - center;          // recentre so the shard rotates about itself
+                if (hasN) sn[i] = norms[vi];
+                if (hasUV) suv[i] = uvs[vi];
+                spat.Add(patternList[vi]);           // crack data travels with the shard,
+                sord.Add(orderList[vi]);             // so the cracks stay exactly where they were
                 st[i] = i;
             }
 
             var m = new Mesh { name = "Shard" };
             m.vertices = sv;
             if (hasUV) m.uv = suv;
+            m.SetUVs(2, spat);
+            m.SetUVs(3, sord);
             m.SetTriangles(st, 0);
             if (hasN) m.normals = sn; else m.RecalculateNormals();
             m.RecalculateBounds();
@@ -303,15 +364,9 @@ public class CrackShatter3D : MonoBehaviour
                 t.position + t.rotation * Vector3.Scale(center, scale), t.rotation);
             go.transform.localScale = scale;
 
-            var mf = go.AddComponent<MeshFilter>();
-            mf.sharedMesh = m;
+            go.AddComponent<MeshFilter>().sharedMesh = m;
             var mr = go.AddComponent<MeshRenderer>();
             mr.sharedMaterial = mats[Mathf.Min(sub, mats.Length - 1)];   // already fully cracked
-
-            // Offset keeps the crack pattern lined up after recentring
-            var mpb = new MaterialPropertyBlock();
-            mpb.SetVector(OffsetId, center);
-            mr.SetPropertyBlock(mpb);
 
             var bc = go.AddComponent<BoxCollider>();
             bc.center = m.bounds.center;
@@ -327,7 +382,7 @@ public class CrackShatter3D : MonoBehaviour
             go.AddComponent<ShardLife>().Init(shardLifetime, m);
         }
 
-        if (isTemp) Destroy(src);
+        if (isTemp) Destroy(posSrc);
     }
 
     // ------------------------------------------------------------------ Helpers
@@ -337,19 +392,6 @@ public class CrackShatter3D : MonoBehaviour
         if (targetRenderer is SkinnedMeshRenderer smr) return smr.sharedMesh;
         var mf = targetRenderer.GetComponent<MeshFilter>();
         return mf != null ? mf.sharedMesh : null;
-    }
-
-    private Mesh GetShatterMesh(out bool isTemp)
-    {
-        if (targetRenderer is SkinnedMeshRenderer smr)
-        {
-            var baked = new Mesh();
-            smr.BakeMesh(baked);   // current animated pose
-            isTemp = true;
-            return baked;
-        }
-        isTemp = false;
-        return GetSharedMesh();
     }
 
     /// <summary>Call on respawn to restore the player.</summary>
