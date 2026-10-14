@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private PlayerStatus stat;
 
+    [SerializeField] private GameSystem gameSys;
+
     public bool getP1() { return isP1; }
 
     private int ballCount;
@@ -54,31 +56,34 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-        Vector2 walkInput;
-
-        if (isP1)
+        if (!gameSys.isGamePaused())
         {
-            walkInput = controls.Player1.Move.ReadValue<Vector2>();
-        }
-        else
-        {
-            walkInput = controls.Player2.Move.ReadValue<Vector2>();
-        }
+            Vector2 walkInput;
 
-        Vector3 walkVector = new Vector3(walkInput.x, 0, walkInput.y);
-        transform.Translate(walkVector * speed * Time.deltaTime, Space.World);
+            if (isP1)
+            {
+                walkInput = controls.Player1.Move.ReadValue<Vector2>();
+            }
+            else
+            {
+                walkInput = controls.Player2.Move.ReadValue<Vector2>();
+            }
 
-        if(walkVector != Vector3.zero)
-        {
-            transform.rotation = Quaternion.LookRotation(walkVector);
+            Vector3 walkVector = new Vector3(walkInput.x, 0, walkInput.y);
+            transform.Translate(walkVector * speed * Time.deltaTime, Space.World);
 
+            if (walkVector != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(walkVector);
+
+            }
         }
 
     }
 
     public void Shoot_performed(InputAction.CallbackContext context)
     {
-        if(ballCount > 0)
+        if(ballCount > 0 && !gameSys.isGamePaused())
         {
             GameObject newBall = Instantiate(ball);
             Ball b = newBall.GetComponent<Ball>();
