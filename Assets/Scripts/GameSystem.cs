@@ -1,3 +1,5 @@
+using System;
+using TMPro;
 using UnityEngine;
 
 public class GameSystem : MonoBehaviour
@@ -5,6 +7,15 @@ public class GameSystem : MonoBehaviour
 
     private int p1p;
     private int p2p;
+
+    [SerializeField] private TextMeshProUGUI p1txt;
+    [SerializeField] private TextMeshProUGUI p2txt;
+
+    [SerializeField] private TextMeshProUGUI p1h;
+    [SerializeField] private TextMeshProUGUI p2h;
+
+    [SerializeField] private PlayerStatus p1;
+    [SerializeField] private PlayerStatus p2;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -20,6 +31,12 @@ public class GameSystem : MonoBehaviour
         {
             endGame();
         }
+
+        p1txt.text = "LEFT PLAYER    " + p1p;
+        p2txt.text = p2p + "    RIGHT PLAYER";
+
+        p1h.text = "HEALTH    " + p1.Health;
+        p2h.text = p2.Health + "    HEALTH";
     }
 
 

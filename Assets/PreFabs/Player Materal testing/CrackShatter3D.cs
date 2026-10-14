@@ -161,6 +161,39 @@ public class CrackShatter3D : MonoBehaviour
     // ------------------------------------------------------------------ Hits
 
     /// <summary>Call this each time the player dodges. The crack starts at a random point on the body.</summary>
+    /// 
+
+    public void SetHealth(int currentHealth, int maxHealth)
+    {
+        if (!ready || shattered || maxHealth <= 0)
+            return;
+
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        // 100% health = 0 damage; 0% health = fully grown cracks.
+        float targetDamage = 1f - ((float)currentHealth / maxHealth);
+
+        // Keep the crack origin consistent as health decreases.
+        if (!originSet)
+        {
+            originSet = true;
+
+            int vi = Random.Range(0, meshVerts.Length);
+            SetCrackOrigin(vi);
+        }
+
+        // Don't restart the animation unnecessarily.
+        if (currentHealth > 0 && growRoutine != null)
+            StopCoroutine(growRoutine);
+
+        // Grow cracks toward the new health-based damage value.
+        Vector3 impactPoint = targetRenderer.bounds.center;
+
+        growRoutine = StartCoroutine(
+            GrowCracks(targetDamage, currentHealth <= 0, impactPoint)
+        );
+    }
+
     public void RegisterDodge()
     {
         if (!ready) return;
