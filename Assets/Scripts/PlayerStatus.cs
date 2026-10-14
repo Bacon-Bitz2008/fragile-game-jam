@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class PlayerStatus : MonoBehaviour
@@ -5,6 +6,7 @@ public class PlayerStatus : MonoBehaviour
 
     [SerializeField] private GameSystem gameSys;
     [SerializeField] private PlayerMovement pm;
+
 
     private int maxHealth = 3;
 
