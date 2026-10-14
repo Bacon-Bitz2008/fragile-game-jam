@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 8477502577615485167}
   - component: {fileID: -7062756456403171797}
   - component: {fileID: 1583979183139987523}
+  - component: {fileID: -3894406910968819875}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -272,3 +273,17 @@ MonoBehaviour:
   launchSpeed: 8
   speed: 9
   isP1: 1
+--- !u!114 &-3894406910968819875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8505984395715004024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd6b23d9d0c17d947b5f773a93ba3e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStatus
+  gameSys: {fileID: 0}
+  pm: {fileID: 0}

@@ -3,7 +3,12 @@ using UnityEngine;
 public class PlayerStatus : MonoBehaviour
 {
 
+    [SerializeField] private GameSystem gameSys;
+    [SerializeField] private PlayerMovement pm;
+
     private int health;
+
+    private int playerID;
 
     public int Health
     {
@@ -15,7 +20,14 @@ public class PlayerStatus : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        if (pm.getP1())
+        {
+            playerID = 0;
+        }
+        else
+        {
+            playerID = 1;
+        }
     }
 
     // Update is called once per frame
@@ -30,5 +42,6 @@ public class PlayerStatus : MonoBehaviour
     private void die()
     {
         print("dead");
+        gameSys.updateScore(playerID);
     }
 }
