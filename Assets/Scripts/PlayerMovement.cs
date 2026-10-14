@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    private void Shoot_performed(InputAction.CallbackContext context)
+    public void Shoot_performed(InputAction.CallbackContext context)
     {
         if(ballCount > 0)
         {
