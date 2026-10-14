@@ -237,7 +237,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8505984395715004024}
   serializedVersion: 5
-  m_Mass: 1
+  m_Mass: 55
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -254,7 +254,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!114 &1583979183139987523
 MonoBehaviour:
@@ -269,6 +269,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   ball: {fileID: 3670523357480188666, guid: 35ddc797ce864c448b3b21ddd71644e9, type: 3}
-  launchSpeed: 20
-  speed: 5
+  launchSpeed: 8
+  speed: 9
   isP1: 1

@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
 
     [SerializeField] GameObject ball;
-    [SerializeField] int launchSpeed;
+    [SerializeField] private float launchSpeed;
 
     [SerializeField] private int speed;
 
@@ -83,8 +83,13 @@ public class PlayerMovement : MonoBehaviour
             Rigidbody brb = newBall.GetComponent<Rigidbody>();
 
             brb.AddForce(transform.forward * launchSpeed, ForceMode.Impulse);
+            brb.AddForce(transform.up * launchSpeed * 0.2f, ForceMode.Impulse);
 
             ballCount--;
+            if (ballCount < 0)
+            {
+                ballCount = 0;
+            }
         }
         
     }
