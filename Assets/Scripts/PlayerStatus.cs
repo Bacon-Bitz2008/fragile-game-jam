@@ -23,15 +23,13 @@ public class PlayerStatus : MonoBehaviour
     private int playerID;
 
     //public int MaxHealth => maxHealth;
-<<<<<<< HEAD
-  
-=======
+
     private void Start()
     {
 
 
     }
->>>>>>> 72f5d68d0b1e58cc45f4638a865ea91fd56ed5fe
+
     public int Health
     {
         get => health;
@@ -54,7 +52,6 @@ public class PlayerStatus : MonoBehaviour
     private void Awake()
     {
 
-
         if (pm.getP1())
         {
             playerID = 0;
@@ -73,40 +70,25 @@ public class PlayerStatus : MonoBehaviour
         health = maxHealth;
         Health = maxHealth;
 
-
-<<<<<<< HEAD
-
-      
-       
-
-=======
-       
->>>>>>> 72f5d68d0b1e58cc45f4638a865ea91fd56ed5fe
     }
 
     private void Update()
     {
 
-<<<<<<< HEAD
-
-        Debug.Log("damage taken");
-
-        
-       
-
-        if (health <= 0 && !dead)
-            Die();
-
-=======
-
->>>>>>> 72f5d68d0b1e58cc45f4638a865ea91fd56ed5fe
-        if(health <= 0)
+        if (!gameSys.isGamePaused())
         {
-            gameSys.updateScore(playerID);
-            health = maxHealth;
-            crackEffect.ResetCracks();
-        }
 
+            if (health <= 0 && !dead)
+                Die();
+
+
+            if (health <= 0)
+            {
+                gameSys.updateScore(playerID);
+                health = maxHealth;
+                crackEffect.ResetCracks();
+            }
+        }
 
     }
 

@@ -20,6 +20,11 @@ public class GameSystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI winTxt;
     [SerializeField] private GameObject winScreen;
 
+    [SerializeField] private GameObject pauseScreen;
+
+    private bool gamePaused;
+    public bool isGamePaused() { return gamePaused; }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -75,5 +80,13 @@ public class GameSystem : MonoBehaviour
         {
             winTxt.text = "DRAW";
         }
+    }
+
+
+    public void togglePause()
+    {
+        gamePaused = !gamePaused;
+
+        pauseScreen.SetActive(gamePaused);
     }
 }
