@@ -189,6 +189,35 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Health",
+            "id": "f9ada078-0f12-4141-943f-2c451f578424",
+            "actions": [
+                {
+                    "name": "Damage",
+                    "type": "Button",
+                    "id": "f8c82e47-4769-40e2-80d5-b7dec79c1e0d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e6c303f7-f828-41ee-bb05-aace2e92a5f6",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Damage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
