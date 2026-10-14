@@ -1,10 +1,18 @@
-
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerStatus : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 100;
+
+
+    [SerializeField] private GameSystem gameSys;
+    [SerializeField] private PlayerMovement pm;
+
+
+    //private int maxHealth = 3;
+
 
     [Tooltip("Assign CrackShatter3D here, or leave empty to find it automatically.")]
     [SerializeField] private CrackShatter3D crackEffect;
@@ -13,7 +21,7 @@ public class PlayerStatus : MonoBehaviour
     private int health;
     private bool dead;
 
-    public int MaxHealth => maxHealth;
+    //public int MaxHealth => maxHealth;
 
     public int Health
     {
