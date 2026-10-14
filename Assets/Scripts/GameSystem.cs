@@ -17,6 +17,9 @@ public class GameSystem : MonoBehaviour
     [SerializeField] private PlayerStatus p1;
     [SerializeField] private PlayerStatus p2;
 
+    [SerializeField] private TextMeshProUGUI winTxt;
+    [SerializeField] private GameObject winScreen;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,5 +62,18 @@ public class GameSystem : MonoBehaviour
     private void endGame()
     {
         print("GAME OVER");
+        winScreen.SetActive(true);
+        if (p1p >= 5 && p2p < 5)
+        {
+            winTxt.text = "LEFT PLAYER WINS";
+        }
+        else if (p2p >= 5 && p1p < 5)
+        {
+            winTxt.text = "RIGHT PLAYER WINS";
+        }
+        else
+        {
+            winTxt.text = "DRAW";
+        }
     }
 }
