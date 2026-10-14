@@ -275,6 +275,35 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Health"",
+            ""id"": ""f9ada078-0f12-4141-943f-2c451f578424"",
+            ""actions"": [
+                {
+                    ""name"": ""Damage"",
+                    ""type"": ""Button"",
+                    ""id"": ""f8c82e47-4769-40e2-80d5-b7dec79c1e0d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""e6c303f7-f828-41ee-bb05-aace2e92a5f6"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Damage"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -287,12 +316,16 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player2 = asset.FindActionMap("Player2", throwIfNotFound: true);
         m_Player2_Move = m_Player2.FindAction("Move", throwIfNotFound: true);
         m_Player2_Shoot = m_Player2.FindAction("Shoot", throwIfNotFound: true);
+        // Health
+        m_Health = asset.FindActionMap("Health", throwIfNotFound: true);
+        m_Health_Damage = m_Health.FindAction("Damage", throwIfNotFound: true);
     }
 
     ~@Controls()
     {
         UnityEngine.Debug.Assert(!m_Player1.enabled, "This will cause a leak and performance issues, Controls.Player1.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Player2.enabled, "This will cause a leak and performance issues, Controls.Player2.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Health.enabled, "This will cause a leak and performance issues, Controls.Health.Disable() has not been called.");
     }
 
     /// <summary>
@@ -578,6 +611,102 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="Player2Actions" /> instance referencing this action map.
     /// </summary>
     public Player2Actions @Player2 => new Player2Actions(this);
+
+    // Health
+    private readonly InputActionMap m_Health;
+    private List<IHealthActions> m_HealthActionsCallbackInterfaces = new List<IHealthActions>();
+    private readonly InputAction m_Health_Damage;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Health".
+    /// </summary>
+    public struct HealthActions
+    {
+        private @Controls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public HealthActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Health/Damage".
+        /// </summary>
+        public InputAction @Damage => m_Wrapper.m_Health_Damage;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Health; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="HealthActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(HealthActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="HealthActions" />
+        public void AddCallbacks(IHealthActions instance)
+        {
+            if (instance == null || m_Wrapper.m_HealthActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_HealthActionsCallbackInterfaces.Add(instance);
+            @Damage.started += instance.OnDamage;
+            @Damage.performed += instance.OnDamage;
+            @Damage.canceled += instance.OnDamage;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="HealthActions" />
+        private void UnregisterCallbacks(IHealthActions instance)
+        {
+            @Damage.started -= instance.OnDamage;
+            @Damage.performed -= instance.OnDamage;
+            @Damage.canceled -= instance.OnDamage;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="HealthActions.UnregisterCallbacks(IHealthActions)" />.
+        /// </summary>
+        /// <seealso cref="HealthActions.UnregisterCallbacks(IHealthActions)" />
+        public void RemoveCallbacks(IHealthActions instance)
+        {
+            if (m_Wrapper.m_HealthActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="HealthActions.AddCallbacks(IHealthActions)" />
+        /// <seealso cref="HealthActions.RemoveCallbacks(IHealthActions)" />
+        /// <seealso cref="HealthActions.UnregisterCallbacks(IHealthActions)" />
+        public void SetCallbacks(IHealthActions instance)
+        {
+            foreach (var item in m_Wrapper.m_HealthActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_HealthActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="HealthActions" /> instance referencing this action map.
+    /// </summary>
+    public HealthActions @Health => new HealthActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player1" which allows adding and removing callbacks.
     /// </summary>
@@ -621,5 +750,20 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShoot(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Health" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="HealthActions.AddCallbacks(IHealthActions)" />
+    /// <seealso cref="HealthActions.RemoveCallbacks(IHealthActions)" />
+    public interface IHealthActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Damage" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDamage(InputAction.CallbackContext context);
     }
 }
