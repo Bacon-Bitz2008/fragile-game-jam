@@ -6,6 +6,9 @@ public class PlayerStatus : MonoBehaviour
     [SerializeField] private GameSystem gameSys;
     [SerializeField] private PlayerMovement pm;
 
+    private int maxHealth = 3;
+
+
     private int health;
 
     private int playerID;
@@ -20,6 +23,9 @@ public class PlayerStatus : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
+        health = maxHealth;
+
         if (pm.getP1())
         {
             playerID = 0;
@@ -43,5 +49,6 @@ public class PlayerStatus : MonoBehaviour
     {
         print("dead");
         gameSys.updateScore(playerID);
+        health = maxHealth;
     }
 }
