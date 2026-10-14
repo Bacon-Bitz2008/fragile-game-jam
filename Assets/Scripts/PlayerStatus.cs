@@ -22,7 +22,11 @@ public class PlayerStatus : MonoBehaviour
     private bool dead;
 
     //public int MaxHealth => maxHealth;
+    private void Start()
+    {
+        controls.Health.Enable();
 
+    }
     public int Health
     {
         get => health;
@@ -44,6 +48,8 @@ public class PlayerStatus : MonoBehaviour
 
     private void Awake()
     {
+       
+
         // Find the crack effect first.
         if (crackEffect == null)
             crackEffect = GetComponentInChildren<CrackShatter3D>();
@@ -52,18 +58,20 @@ public class PlayerStatus : MonoBehaviour
         health = maxHealth;
         Health = maxHealth;
 
+
+        controls.Health.Enable();
         controls = new Controls();
         controls.Health.Damage.performed += Damage_performed;
-        controls.Health.Enable();
+       
     }
 
     private void Damage_performed(InputAction.CallbackContext context)
     {
         if (dead) return;
 
-      
+        Debug.Log("damage taken");
 
-        // IMPORTANT: Use the property, not health -= 10.
+        
         Health -= 25;
 
         if (health <= 0 && !dead)
