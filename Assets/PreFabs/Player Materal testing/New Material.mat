@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: New Material
-  m_Shader: {fileID: 4800000, guid: df8c6f2dfc5421644895f5c029d65e0c, type: 3}
+  m_Shader: {fileID: 4800000, guid: e218601ab95be704fb8232a250281baf, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -99,7 +99,7 @@ Material:
     - _CrackWidthGrow: 0.07
     - _Cull: 2
     - _Cutoff: 0.5
-    - _Damage: 0
+    - _Damage: 1
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -130,8 +130,8 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _CrackColor: {r: 0, g: 0, b: 0, a: 1}
-    - _CrackEmission: {r: 0, g: 0, b: 0, a: 0}
+    - _CrackColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CrackEmission: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _ImpactPointOS: {r: 0, g: 0, b: 0, a: 0}
     - _ObjectOffset: {r: 0, g: 0, b: 0, a: 0}
