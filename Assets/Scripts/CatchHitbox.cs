@@ -3,7 +3,8 @@ using UnityEngine;
 public class CatchHitbox : MonoBehaviour
 {
     [SerializeField] private bool canCatch;
-
+    private Ball ballInRange;
+    public Ball GetBallInRange() {  return ballInRange; }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,6 +17,13 @@ public class CatchHitbox : MonoBehaviour
         
     }
 
+   public bool isCanCatch
+    {
+        get { return canCatch; }
+    }
+    
+    
+    
     private void OnTriggerEnter(Collider other)
     {
 
@@ -28,6 +36,7 @@ public class CatchHitbox : MonoBehaviour
             if (ball.isDead == false)
             {
                 canCatch = true;
+                ballInRange = ball;
             }
         }
     }
@@ -44,10 +53,9 @@ public class CatchHitbox : MonoBehaviour
             if (ball.isDead == false)
             {
                 canCatch = false;
+                ballInRange = null;
             }
         }
-
-
 
 
 
