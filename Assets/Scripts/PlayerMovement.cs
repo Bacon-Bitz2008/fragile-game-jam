@@ -59,6 +59,13 @@ public class PlayerMovement : MonoBehaviour
     private float nextDashTime;
     private Vector3 dashDir;
 
+    [Header("Bounds")]
+    [SerializeField] private Transform northBound;
+    [SerializeField] private Transform southBound;
+    [SerializeField] private Transform westBound;
+    [SerializeField] private Transform eastBound;
+
+
 
     //Ani.Play("Player Run");
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -95,11 +102,19 @@ public class PlayerMovement : MonoBehaviour
         {
             catchCoolDown -= Time.deltaTime;
         }
-        
+
+        // prevent phasing thru walls hopefully
+
+        if (isP1)
+        {
+            transform.position = new Vector3(Mathf.Clamp(transform.position.x, westBound.position.x, southBound.position.x), transform.position.y, Mathf.Clamp(transform.position.z, southBound.position.z, northBound.position.z));
+        }
+        else
+        {
+            transform.position = new Vector3(Mathf.Clamp(transform.position.x, southBound.position.x, eastBound.position.x), transform.position.y, Mathf.Clamp(transform.position.z, southBound.position.z, northBound.position.z));
+        }
 
 
-
-       
 
 
         if (!gameSys.isGamePaused())
