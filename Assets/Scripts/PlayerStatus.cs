@@ -22,6 +22,12 @@ public class PlayerStatus : MonoBehaviour
 
     private int playerID;
 
+
+    private bool canTakeDamage = true;
+
+    public bool CanTakeDamage() { return canTakeDamage; }
+
+
     //public int MaxHealth => maxHealth;
 
     private void Start()
@@ -99,13 +105,6 @@ public class PlayerStatus : MonoBehaviour
             if (health <= 0 && !dead)
                 Die();
 
-
-            if (health <= 0)
-            {
-                gameSys.updateScore(playerID);
-                health = maxHealth;
-                crackEffect.ResetCracks();
-            }
         }
 
     }
@@ -114,8 +113,21 @@ public class PlayerStatus : MonoBehaviour
 
     private void Die()
     {
+        canTakeDamage = false;
+        gameSys.updateScore(playerID);
+        health = maxHealth;
         dead = true;
         Debug.Log("Dead!");
+        Invoke("enableDamage", 1);
+    }
+
+
+    private void enableDamage()
+    {
+        canTakeDamage = true;
+        crackEffect.ResetCracks();
+        dead = false;
+
     }
 
 
