@@ -1300,7 +1300,7 @@ MonoBehaviour:
   m_SoftShadowQuality: 0
   m_RenderingLayersMask:
     serializedVersion: 0
-    m_Bits: 1
+    m_Bits: 0
   m_ShadowRenderingLayersMask:
     serializedVersion: 0
     m_Bits: 1
@@ -1320,7 +1320,7 @@ Light:
   serializedVersion: 13
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 3
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1358,7 +1358,7 @@ Light:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 0
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
@@ -1382,13 +1382,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 121774540}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.02612754, y: -0.2587243, z: -0.007000852, w: 0.9655724}
+  m_LocalRotation: {x: 0.6830127, y: -0.18301266, z: 0.18301266, w: 0.6830127}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -3.1, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: -30, z: 0}
 --- !u!1001 &126137092
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4034,12 +4034,28 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 600140377}
     - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 18e641935397fdb4f8f1b96406833919, type: 2}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 525eee6319258a448a795a3ad3a64ca8, type: 2}
     - target: {fileID: 4339568895568013326, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
       propertyPath: m_Name
       value: Red Team
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339568895568013326, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5080389710100746560, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
       propertyPath: maxHits
@@ -6676,7 +6692,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: bcd14597b15f9044490e7fefbafc14f8, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -8575,7 +8591,35 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 600140377}
     - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: m_SkinnedMotionVectors
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 99d835bea4e4fb04d903713dd06ef86c, type: 2}
+    - target: {fileID: 1351806525778587304, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 2305dd172c731ec4786aa928990ef92a, type: 2}
     - target: {fileID: 4339568895568013326, guid: 5cdff94d21a2f04458e14dd536445f17, type: 3}
@@ -15875,6 +15919,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1166000025}
     - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: hold
+      value: 
+      objectReference: {fileID: 8300000, guid: f065c80c3aec51e40a0a2db728032d18, type: 3}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
       propertyPath: isP1
       value: 1
       objectReference: {fileID: 0}
@@ -15882,6 +15930,10 @@ PrefabInstance:
       propertyPath: stat
       value: 
       objectReference: {fileID: 1166000023}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: shoot
+      value: 
+      objectReference: {fileID: 8300000, guid: c61bfc2e925f7ef45aa80432c8bfcf7a, type: 3}
     - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
       propertyPath: gameSys
       value: 
@@ -22329,6 +22381,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 999091485}
     - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: hold
+      value: 
+      objectReference: {fileID: 8300000, guid: f065c80c3aec51e40a0a2db728032d18, type: 3}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
       propertyPath: isP1
       value: 0
       objectReference: {fileID: 0}
@@ -22336,6 +22392,10 @@ PrefabInstance:
       propertyPath: stat
       value: 
       objectReference: {fileID: 999091483}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: shoot
+      value: 
+      objectReference: {fileID: 8300000, guid: 8762f5aebaf1edd41821a5cf200aac86, type: 3}
     - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
       propertyPath: gameSys
       value: 
