@@ -1,6 +1,6 @@
-
 using JetBrains.Annotations;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
@@ -27,14 +27,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameSystem gameSys;
 
     [SerializeField] private Animator Ani;
-
+    [SerializeField] private float shieldDuration = 0.3f;
+    [SerializeField] private GameObject shield;
+    private Coroutine shieldRoutine;
     private bool isRunning = false;
-
     public bool getP1() { return isP1; }
     private Ball lastThrownBall;
     private CatchHitbox catchHitbox;
     private int ballCount;
-    public int getBallCount() {  return ballCount; }
+    public int getBallCount() { return ballCount; }
     private int maxBalls = 2;
     public int getMaxBalls()
     {
@@ -60,6 +61,12 @@ public class PlayerMovement : MonoBehaviour
     private float nextDashTime;
     private Vector3 dashDir;
 
+    [Header("Dash Particles")]
+    [SerializeField] private ParticleSystem dashParticles;      // optional: leave empty and one gets made automatically
+    [SerializeField] private Material dashParticleMaterial;     // optional: drag a material in for custom looks (recommended for builds)
+    [SerializeField] private Color dashColor = Color.white;
+    [SerializeField] private float dashParticleHeight = 0.5f;   // how high off the player's pivot the trail spawns
+
     [SerializeField] private AudioResource shoot;
     [SerializeField] private AudioResource hold;
 
@@ -77,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-       
+
 
         controls = new Controls();
         catchHitbox = GetComponentInChildren<CatchHitbox>();
@@ -96,6 +103,7 @@ public class PlayerMovement : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
 
+        SetupDashParticles();
     }
 
 
@@ -103,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
-      
+
         if (catchCoolDown >= 0)
         {
             catchCoolDown -= Time.deltaTime;
@@ -140,11 +148,11 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-            // --- detect a "tap": input going from nothing to something ---
+            
             bool wasIdle = prevInput.sqrMagnitude < 0.25f;
             bool nowActive = walkInput.sqrMagnitude >= 0.25f;
 
-            // this is to check for window of dashing in moving 
+        
             if (wasIdle && nowActive)
             {
                 Vector2 dir = walkInput.normalized;
@@ -159,6 +167,8 @@ public class PlayerMovement : MonoBehaviour
                     dashTimeLeft = dashDuration;
                     dashDir = new Vector3(dir.x, 0, dir.y);
                     lastTapTime = -10f; // reset so a third tap doesn't chain
+
+                    StartDashParticles();
                 }
                 else
                 {
@@ -188,6 +198,8 @@ public class PlayerMovement : MonoBehaviour
                 {
                     isDashing = false;
                     nextDashTime = Time.time + dashCooldown;
+
+                    StopDashParticles();
                 }
                 movingNow = true;
             }
@@ -207,8 +219,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-            // --- animation ---
-            // same from last time
+           
             if (movingNow && !isRunning)
             {
                 Ani.SetBool("Running", true);
@@ -220,8 +231,100 @@ public class PlayerMovement : MonoBehaviour
                 isRunning = false;
             }
         }
-   
+
     }
+
+
+
+
+    
+    private void SetupDashParticles()
+    {
+        if (dashParticles != null)
+        {
+            // one was assigned in the Inspector, just make sure it doesn't play on its own
+            var assignedMain = dashParticles.main;
+            assignedMain.playOnAwake = false;
+            assignedMain.emitterVelocityMode = ParticleSystemEmitterVelocityMode.Transform;
+            dashParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            return;
+        }
+
+        GameObject go = new GameObject("DashParticles");
+        go.transform.SetParent(transform);
+        go.transform.localPosition = new Vector3(0f, dashParticleHeight, 0f);
+        go.transform.localRotation = Quaternion.identity;
+
+        dashParticles = go.AddComponent<ParticleSystem>();
+
+        // a new particle system starts playing right away, and some settings can't change while playing
+        dashParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        var main = dashParticles.main;
+        main.playOnAwake = false;
+        main.loop = true;
+        main.duration = 1f;
+        main.startLifetime = 0.35f;
+        main.startSpeed = new ParticleSystem.MinMaxCurve(0f, 1f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.2f, 0.4f);
+        main.startColor = dashColor;
+        main.simulationSpace = ParticleSystemSimulationSpace.World; // particles stay behind = trail
+        main.maxParticles = 200;
+        // measure movement from the transform, not the Rigidbody (we move with transform.Translate)
+        main.emitterVelocityMode = ParticleSystemEmitterVelocityMode.Transform;
+
+        // only spawn particles while actually moving
+        var emission = dashParticles.emission;
+        emission.rateOverTime = 0f;
+        emission.rateOverDistance = 15f;
+
+        var shape = dashParticles.shape;
+        shape.shapeType = ParticleSystemShapeType.Sphere;
+        shape.radius = 0.3f;
+
+        // fade out
+        var colorOverLifetime = dashParticles.colorOverLifetime;
+        colorOverLifetime.enabled = true;
+        Gradient fade = new Gradient();
+        fade.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(dashColor, 0f), new GradientColorKey(dashColor, 1f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) });
+        colorOverLifetime.color = fade;
+
+        // shrink out
+        var sizeOverLifetime = dashParticles.sizeOverLifetime;
+        sizeOverLifetime.enabled = true;
+        sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 1f, 1f, 0f));
+
+        // material (URP needs a URP particle shader or it shows up pink)
+        ParticleSystemRenderer psRenderer = go.GetComponent<ParticleSystemRenderer>();
+        if (dashParticleMaterial != null)
+        {
+            psRenderer.material = dashParticleMaterial;
+        }
+        else
+        {
+            Shader urpParticle = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            if (urpParticle != null)
+            {
+                psRenderer.material = new Material(urpParticle);
+            }
+        }
+    }
+
+    private void StartDashParticles()
+    {
+        if (dashParticles != null) dashParticles.Play();
+    }
+
+    private void StopDashParticles()
+    {
+        // StopEmitting lets the existing particles fade out instead of vanishing
+        if (dashParticles != null) dashParticles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+    }
+
+
+
 
     public void Catch_Performed(InputAction.CallbackContext context)
     {
@@ -229,9 +332,10 @@ public class PlayerMovement : MonoBehaviour
         {
             if (ballCount < 2)
             {
-                
+
 
                 catchCoolDown += 5;
+                ActivateShield();
                 Ball incoming = catchHitbox.GetBallInRange();
 
                 if (catchHitbox.isCanCatch == true)
@@ -248,11 +352,25 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void ActivateShield()
+    {
+        if (shieldRoutine != null) StopCoroutine(shieldRoutine);
+        shieldRoutine = StartCoroutine(ShieldRoutine());
+    }
+
+    private IEnumerator ShieldRoutine()
+    {
+        shield.SetActive(true);
+        yield return new WaitForSeconds(shieldDuration);
+        shield.SetActive(false);
+        shieldRoutine = null;
+    }
+
 
 
     public void Shoot_performed(InputAction.CallbackContext context)
     {
-        if(ballCount > 0 && !gameSys.isGamePaused())
+        if (ballCount > 0 && !gameSys.isGamePaused())
         {
             AudioSource aS = GetComponent<AudioSource>();
             aS.resource = shoot;
@@ -273,7 +391,7 @@ public class PlayerMovement : MonoBehaviour
                 ballCount = 0;
             }
         }
-        
+
     }
 
     public void collectBall()
