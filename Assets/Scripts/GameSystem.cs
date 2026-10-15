@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
+using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameSystem : MonoBehaviour
 {
@@ -19,6 +22,16 @@ public class GameSystem : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI winTxt;
     [SerializeField] private GameObject winScreen;
+    [SerializeField] private GameObject winButtons;
+
+    [SerializeField] private GameObject pauseScreen;
+
+    [SerializeField] private AudioSource buzzer;
+
+    private bool gamePaused;
+
+    private bool gameEnded;
+    public bool isGamePaused() { return gamePaused; }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -32,7 +45,10 @@ public class GameSystem : MonoBehaviour
     {
         if(p1p >= 5 || p2p >= 5)
         {
-            endGame();
+            if ((!gameEnded))
+            {
+                endGame();
+            }
         }
 
         p1txt.text = "LEFT PLAYER    " + p1p;
@@ -40,6 +56,7 @@ public class GameSystem : MonoBehaviour
 
         p1h.text = "HEALTH    " + p1.Health;
         p2h.text = p2.Health + "    HEALTH";
+
     }
 
 
@@ -62,6 +79,9 @@ public class GameSystem : MonoBehaviour
     private void endGame()
     {
         print("GAME OVER");
+
+        buzzer.Play();
+
         winScreen.SetActive(true);
         if (p1p >= 5 && p2p < 5)
         {
@@ -75,5 +95,33 @@ public class GameSystem : MonoBehaviour
         {
             winTxt.text = "DRAW";
         }
+
+
+        Invoke("delayToggle", 2);
+        gameEnded = true;
+    }
+
+    private void delayToggle()
+    {
+        winButtons.SetActive(true);
+
+    }
+
+    public void restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void goMenu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+
+
+    public void togglePause()
+    {
+        gamePaused = !gamePaused;
+
+        pauseScreen.SetActive(gamePaused);
     }
 }

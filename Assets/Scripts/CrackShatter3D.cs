@@ -279,6 +279,11 @@ public class CrackShatter3D : MonoBehaviour
     public void Shatter(Vector3 worldImpact)
     {
         if (shattered) return;
+
+        //play shatter sound -ethan
+        AudioSource aS = GetComponent<AudioSource>();
+        aS.Play();
+
         shattered = true;
 
         if (preFracturedPrefab != null) SpawnPrefractured(worldImpact);

@@ -52,7 +52,6 @@ public class PlayerStatus : MonoBehaviour
     private void Awake()
     {
 
-
         if (pm.getP1())
         {
             playerID = 0;
@@ -73,16 +72,11 @@ public class PlayerStatus : MonoBehaviour
 
 
 
-
-
-      
-       
-
-
     }
 
     private void Update()
     {
+
 
 
 
@@ -96,12 +90,23 @@ public class PlayerStatus : MonoBehaviour
 
 
         if(health <= 0)
-        {
-            gameSys.updateScore(playerID);
-            health = maxHealth;
-            crackEffect.ResetCracks();
-        }
 
+        if (!gameSys.isGamePaused())
+
+
+        {
+
+            if (health <= 0 && !dead)
+                Die();
+
+
+            if (health <= 0)
+            {
+                gameSys.updateScore(playerID);
+                health = maxHealth;
+                crackEffect.ResetCracks();
+            }
+        }
 
     }
 
