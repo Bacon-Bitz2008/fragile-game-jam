@@ -25,6 +25,16 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "Catch",
+                    "type": "Button",
+                    "id": "1c6763b8-f953-4851-8bac-afd2d3a0c5ec",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -93,6 +103,17 @@
                     "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f620e171-2c17-438a-bb06-2d72e6e20159",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Catch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -114,6 +135,16 @@
                     "name": "Shoot",
                     "type": "Button",
                     "id": "e0318e1a-b303-46cd-adf7-dbf2087a6705",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Catch",
+                    "type": "Button",
+                    "id": "8e458f3a-2ebe-48c6-b960-2ed7b5de83b7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -185,6 +216,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "31d76e30-8061-42e9-bcef-fc53b09532e5",
+                    "path": "<Keyboard>/rightCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Catch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

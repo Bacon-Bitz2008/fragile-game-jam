@@ -3,6 +3,7 @@ using System.Collections;
 using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class GameSystem : MonoBehaviour
@@ -28,6 +29,10 @@ public class GameSystem : MonoBehaviour
 
     [SerializeField] private AudioSource buzzer;
 
+    [SerializeField] private AudioSource mainSrc;
+
+    [SerializeField] private AudioResource main;
+    [SerializeField] private AudioResource menu;
     private bool gamePaused;
 
     private bool gameEnded;
@@ -121,6 +126,17 @@ public class GameSystem : MonoBehaviour
     public void togglePause()
     {
         gamePaused = !gamePaused;
+
+        if (gamePaused)
+        {
+            mainSrc.resource = menu;
+        }
+        else
+        {
+            mainSrc.resource = main;
+        }
+
+        mainSrc.Play();
 
         pauseScreen.SetActive(gamePaused);
     }
