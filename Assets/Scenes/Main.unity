@@ -4746,6 +4746,9 @@ MonoBehaviour:
   winButtons: {fileID: 343774277}
   pauseScreen: {fileID: 34370058}
   buzzer: {fileID: 600140380}
+  mainSrc: {fileID: 600140379}
+  main: {fileID: 8300000, guid: bcd14597b15f9044490e7fefbafc14f8, type: 3}
+  menu: {fileID: 8300000, guid: c3053752ca3dbcb44a9a06ef2c1c04a1, type: 3}
 --- !u!4 &600140378
 Transform:
   m_ObjectHideFlags: 0
