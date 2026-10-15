@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using System;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -58,6 +59,11 @@ public class PlayerMovement : MonoBehaviour
     private float dashTimeLeft;
     private float nextDashTime;
     private Vector3 dashDir;
+
+    [SerializeField] private AudioResource shoot;
+    [SerializeField] private AudioResource hold;
+
+
 
     [Header("Bounds")]
     [SerializeField] private Transform northBound;
@@ -223,11 +229,17 @@ public class PlayerMovement : MonoBehaviour
         {
             if (ballCount < 2)
             {
+                
+
                 catchCoolDown += 5;
                 Ball incoming = catchHitbox.GetBallInRange();
 
                 if (catchHitbox.isCanCatch == true)
                 {
+                    AudioSource aS = GetComponent<AudioSource>();
+                    aS.resource = hold;
+                    aS.Play();
+
                     Debug.Log("caught");
                     ballCount++;
                     incoming.BallCaught();
@@ -243,6 +255,7 @@ public class PlayerMovement : MonoBehaviour
         if(ballCount > 0 && !gameSys.isGamePaused())
         {
             AudioSource aS = GetComponent<AudioSource>();
+            aS.resource = shoot;
             aS.Play();
 
             GameObject newBall = Instantiate(ball);
