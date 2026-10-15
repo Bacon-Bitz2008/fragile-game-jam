@@ -109,7 +109,7 @@ public class GameSystem : MonoBehaviour
 
     public void goMenu()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Menu");
     }
 
 
