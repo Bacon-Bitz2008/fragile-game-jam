@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -20,6 +21,10 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private GameSystem gameSys;
 
+    [SerializeField] private Animator Ani;
+
+    private bool isRunning = false;
+
     public bool getP1() { return isP1; }
 
     private int ballCount;
@@ -30,10 +35,12 @@ public class PlayerMovement : MonoBehaviour
         return maxBalls;
     }
 
-
+    //Ani.Play("Player Run");
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+       
+
         controls = new Controls();
 
         if (isP1)
@@ -56,26 +63,48 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
+       
+
         if (!gameSys.isGamePaused())
         {
             Vector2 walkInput;
+            
+            
 
             if (isP1)
             {
                 walkInput = controls.Player1.Move.ReadValue<Vector2>();
+               
+
             }
             else
             {
                 walkInput = controls.Player2.Move.ReadValue<Vector2>();
+              
             }
 
             Vector3 walkVector = new Vector3(walkInput.x, 0, walkInput.y);
             transform.Translate(walkVector * speed * Time.deltaTime, Space.World);
 
-            if (walkVector != Vector3.zero)
+            // fixing the animation on player
+
+            bool movingNow = walkVector != Vector3.zero;
+
+            if (movingNow)
             {
                 transform.rotation = Quaternion.LookRotation(walkVector);
+            }
 
+            // only change animation when the state actually changes
+            if (movingNow && !isRunning)
+            {
+                Ani.Play("Player Run");
+                isRunning = true;
+            }
+            else if (!movingNow && isRunning)
+            {
+                Ani.Play("Player Idle");
+                isRunning = false;
             }
         }
 
