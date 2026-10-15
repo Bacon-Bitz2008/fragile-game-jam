@@ -12305,6 +12305,22 @@ PrefabInstance:
       propertyPath: gameSys
       value: 
       objectReference: {fileID: 600140377}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: eastBound
+      value: 
+      objectReference: {fileID: 1837268338}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: westBound
+      value: 
+      objectReference: {fileID: 1437163481}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: northBound
+      value: 
+      objectReference: {fileID: 444980665}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: southBound
+      value: 
+      objectReference: {fileID: 289296203}
     - target: {fileID: 7392055830973017078, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -16909,6 +16925,22 @@ PrefabInstance:
       propertyPath: gameSys
       value: 
       objectReference: {fileID: 600140377}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: eastBound
+      value: 
+      objectReference: {fileID: 1837268338}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: westBound
+      value: 
+      objectReference: {fileID: 1437163481}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: northBound
+      value: 
+      objectReference: {fileID: 444980665}
+    - target: {fileID: 1583979183139987523, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
+      propertyPath: southBound
+      value: 
+      objectReference: {fileID: 289296203}
     - target: {fileID: 7392055830973017078, guid: 05cf910a7ada3fe44adac43dcb9c2312, type: 3}
       propertyPath: m_IsActive
       value: 0
