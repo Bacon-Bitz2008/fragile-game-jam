@@ -211,12 +211,12 @@ public class PlayerMovement : MonoBehaviour
             // same from last time
             if (movingNow && !isRunning)
             {
-                Ani.Play("Player Run");
+                Ani.SetBool("Running", true);
                 isRunning = true;
             }
             else if (!movingNow && isRunning)
             {
-                Ani.Play("Player Idle");
+                Ani.SetBool("Running", false);
                 isRunning = false;
             }
         }
@@ -263,7 +263,7 @@ public class PlayerMovement : MonoBehaviour
             lastThrownBall.setThrownFrom(gameObject.name);
             newBall.transform.position = transform.position;
             Rigidbody brb = newBall.GetComponent<Rigidbody>();
-
+            Ani.SetTrigger("Throw");
             brb.AddForce(transform.forward * launchSpeed, ForceMode.Impulse);
             brb.AddForce(transform.up * launchSpeed * 0.15f, ForceMode.Impulse);
 
