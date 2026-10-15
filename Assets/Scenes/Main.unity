@@ -6948,8 +6948,8 @@ MonoBehaviour:
   p2h: {fileID: 1728485120}
   p1: {fileID: 1166000023}
   p2: {fileID: 999091483}
-  winTxt: {fileID: 0}
-  winScreen: {fileID: 0}
+  winTxt: {fileID: 1561149007}
+  winScreen: {fileID: 551031573}
   winButtons: {fileID: 343774277}
   pauseScreen: {fileID: 34370058}
   buzzer: {fileID: 600140380}
