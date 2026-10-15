@@ -35,6 +35,26 @@ public class PlayerMovement : MonoBehaviour
         return maxBalls;
     }
 
+
+
+
+
+    // all the stuff neede for the dash to work
+    // Ik its a LOT
+    [SerializeField] private float dashSpeed = 20f;
+    [SerializeField] private float dashDuration = 0.15f;
+    [SerializeField] private float dashCooldown = 0.5f;
+    [SerializeField] private float doubleTapWindow = 0.25f;
+
+    private Vector2 prevInput;
+    private Vector2 lastTapDir;
+    private float lastTapTime = -10f;
+    private bool isDashing;
+    private float dashTimeLeft;
+    private float nextDashTime;
+    private Vector3 dashDir;
+
+
     //Ani.Play("Player Run");
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -68,34 +88,89 @@ public class PlayerMovement : MonoBehaviour
         if (!gameSys.isGamePaused())
         {
             Vector2 walkInput;
-            
-            
 
             if (isP1)
             {
                 walkInput = controls.Player1.Move.ReadValue<Vector2>();
-               
-
             }
             else
             {
                 walkInput = controls.Player2.Move.ReadValue<Vector2>();
-              
             }
 
-            Vector3 walkVector = new Vector3(walkInput.x, 0, walkInput.y);
-            transform.Translate(walkVector * speed * Time.deltaTime, Space.World);
 
-            // fixing the animation on player
 
-            bool movingNow = walkVector != Vector3.zero;
 
-            if (movingNow)
+
+            // --- detect a "tap": input going from nothing to something ---
+            bool wasIdle = prevInput.sqrMagnitude < 0.25f;
+            bool nowActive = walkInput.sqrMagnitude >= 0.25f;
+
+            // this is to check for window of dashing in moving 
+            if (wasIdle && nowActive)
             {
-                transform.rotation = Quaternion.LookRotation(walkVector);
+                Vector2 dir = walkInput.normalized;
+
+                bool sameDirAsLastTap = Vector2.Dot(dir, lastTapDir) > 0.9f;
+                bool withinWindow = Time.time - lastTapTime <= doubleTapWindow;
+
+                if (withinWindow && sameDirAsLastTap && !isDashing && Time.time >= nextDashTime)
+                {
+                    // double tap -> dash
+                    isDashing = true;
+                    dashTimeLeft = dashDuration;
+                    dashDir = new Vector3(dir.x, 0, dir.y);
+                    lastTapTime = -10f; // reset so a third tap doesn't chain
+                }
+                else
+                {
+                    lastTapTime = Time.time;
+                    lastTapDir = dir;
+                }
+            }
+            prevInput = walkInput;
+
+
+
+
+
+
+            // --- movement ---
+            // with addition of dashing
+            Vector3 walkVector = new Vector3(walkInput.x, 0, walkInput.y);
+            bool movingNow;
+
+            if (isDashing)
+            {
+                transform.Translate(dashDir * dashSpeed * Time.deltaTime, Space.World);
+                transform.rotation = Quaternion.LookRotation(dashDir);
+
+                dashTimeLeft -= Time.deltaTime;
+                if (dashTimeLeft <= 0f)
+                {
+                    isDashing = false;
+                    nextDashTime = Time.time + dashCooldown;
+                }
+                movingNow = true;
+            }
+            else
+            {
+                transform.Translate(walkVector * speed * Time.deltaTime, Space.World);
+
+                movingNow = walkVector != Vector3.zero;
+                if (movingNow)
+                {
+                    transform.rotation = Quaternion.LookRotation(walkVector);
+                }
             }
 
-            // only change animation when the state actually changes
+
+
+
+
+
+            // --- animation ---
+            // same from last time
             if (movingNow && !isRunning)
             {
                 Ani.Play("Player Run");
