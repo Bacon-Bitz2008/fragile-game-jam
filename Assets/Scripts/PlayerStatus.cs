@@ -22,6 +22,12 @@ public class PlayerStatus : MonoBehaviour
 
     private int playerID;
 
+
+    private bool canTakeDamage = true;
+
+    public bool CanTakeDamage() { return canTakeDamage; }
+
+
     //public int MaxHealth => maxHealth;
 
     private void Start()
@@ -114,8 +120,16 @@ public class PlayerStatus : MonoBehaviour
 
     private void Die()
     {
+        canTakeDamage = false;
         dead = true;
         Debug.Log("Dead!");
+        Invoke("enableDamage", 2);
+    }
+
+
+    private void enableDamage()
+    {
+        canTakeDamage = true;
     }
 
 
