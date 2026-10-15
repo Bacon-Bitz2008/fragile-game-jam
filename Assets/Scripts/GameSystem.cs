@@ -26,6 +26,8 @@ public class GameSystem : MonoBehaviour
 
     [SerializeField] private GameObject pauseScreen;
 
+    [SerializeField] private AudioSource buzzer;
+
     private bool gamePaused;
 
     private bool gameEnded;
@@ -77,6 +79,9 @@ public class GameSystem : MonoBehaviour
     private void endGame()
     {
         print("GAME OVER");
+
+        buzzer.Play();
+
         winScreen.SetActive(true);
         if (p1p >= 5 && p2p < 5)
         {
