@@ -85,6 +85,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if(ballCount > 0 && !gameSys.isGamePaused())
         {
+            AudioSource aS = GetComponent<AudioSource>();
+            aS.Play();
+
             GameObject newBall = Instantiate(ball);
             Ball b = newBall.GetComponent<Ball>();
             b.setThrownFrom(gameObject.name);
