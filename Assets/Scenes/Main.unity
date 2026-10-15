@@ -14719,12 +14719,16 @@ MonoBehaviour:
 
     r to shoot.
 
+    f to catch.
+
 
     right player
 
     arrows to move.
 
-    right shift to shoot.'
+    right shift to shoot.
+
+    right ctrl to catch.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a122be0b5a8c7c349b6102be6b661f74, type: 2}
   m_sharedMaterial: {fileID: 3848249355688798732, guid: a122be0b5a8c7c349b6102be6b661f74, type: 2}
