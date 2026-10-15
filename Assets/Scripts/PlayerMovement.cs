@@ -283,7 +283,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void takeHit()
     {
-        print("oof");
-        stat.Health--;
+        if (stat.CanTakeDamage())
+        {
+            print("oof");
+            stat.Health--;
+        }
+        
     }
 }
