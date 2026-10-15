@@ -61,6 +61,9 @@ public class CrackShatter3D : MonoBehaviour
     private bool shattered;
     private bool originSet;
     private bool ready;
+    private bool resetPending = false;
+    public float resetDelay;
+
     private Coroutine growRoutine;
 
     // ------------------------------------------------------------------ Setup
@@ -430,12 +433,37 @@ public class CrackShatter3D : MonoBehaviour
     /// <summary>Call on respawn to restore the player.</summary>
     public void ResetCracks()
     {
+        // Prevent repeated calls from resetting the model immediately.
+        if (resetPending)
+            return;
+
+        resetPending = true;
+
+        // Allow the shatter and shards to finish.
+        Invoke(nameof(CompleteResetCracks), 3f);
+    }
+
+    private void CompleteResetCracks()
+    {
+        resetPending = false;
+
+        if (growRoutine != null)
+        {
+            StopCoroutine(growRoutine);
+            growRoutine = null;
+        }
+
         shattered = false;
         originSet = false;
         hits = 0;
         damage = 0f;
+
         SetFloatAll(DamageId, 0f);
-        targetRenderer.enabled = true;
+
+        if (targetRenderer != null)
+            targetRenderer.enabled = true;
+
+        Debug.Log("Cracks reset!");
     }
 }
 

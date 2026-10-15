@@ -62,4 +62,9 @@ public class Ball : MonoBehaviour
     {
         coll.excludeLayers = 0;
     }
+
+    public void BallCaught()
+    {
+        Destroy(gameObject);
+    }
 }

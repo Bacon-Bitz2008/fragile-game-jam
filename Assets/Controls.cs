@@ -111,6 +111,16 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Catch"",
+                    ""type"": ""Button"",
+                    ""id"": ""1c6763b8-f953-4851-8bac-afd2d3a0c5ec"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -179,6 +189,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f620e171-2c17-438a-bb06-2d72e6e20159"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Catch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -200,6 +221,16 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""name"": ""Shoot"",
                     ""type"": ""Button"",
                     ""id"": ""e0318e1a-b303-46cd-adf7-dbf2087a6705"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Catch"",
+                    ""type"": ""Button"",
+                    ""id"": ""8e458f3a-2ebe-48c6-b960-2ed7b5de83b7"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -273,6 +304,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""31d76e30-8061-42e9-bcef-fc53b09532e5"",
+                    ""path"": ""<Keyboard>/rightCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Catch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -312,10 +354,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player1 = asset.FindActionMap("Player1", throwIfNotFound: true);
         m_Player1_Move = m_Player1.FindAction("Move", throwIfNotFound: true);
         m_Player1_Shoot = m_Player1.FindAction("Shoot", throwIfNotFound: true);
+        m_Player1_Catch = m_Player1.FindAction("Catch", throwIfNotFound: true);
         // Player2
         m_Player2 = asset.FindActionMap("Player2", throwIfNotFound: true);
         m_Player2_Move = m_Player2.FindAction("Move", throwIfNotFound: true);
         m_Player2_Shoot = m_Player2.FindAction("Shoot", throwIfNotFound: true);
+        m_Player2_Catch = m_Player2.FindAction("Catch", throwIfNotFound: true);
         // Health
         m_Health = asset.FindActionMap("Health", throwIfNotFound: true);
         m_Health_Damage = m_Health.FindAction("Damage", throwIfNotFound: true);
@@ -403,6 +447,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<IPlayer1Actions> m_Player1ActionsCallbackInterfaces = new List<IPlayer1Actions>();
     private readonly InputAction m_Player1_Move;
     private readonly InputAction m_Player1_Shoot;
+    private readonly InputAction m_Player1_Catch;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player1".
     /// </summary>
@@ -422,6 +467,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player1/Shoot".
         /// </summary>
         public InputAction @Shoot => m_Wrapper.m_Player1_Shoot;
+        /// <summary>
+        /// Provides access to the underlying input action "Player1/Catch".
+        /// </summary>
+        public InputAction @Catch => m_Wrapper.m_Player1_Catch;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -454,6 +503,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @Catch.started += instance.OnCatch;
+            @Catch.performed += instance.OnCatch;
+            @Catch.canceled += instance.OnCatch;
         }
 
         /// <summary>
@@ -471,6 +523,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @Catch.started -= instance.OnCatch;
+            @Catch.performed -= instance.OnCatch;
+            @Catch.canceled -= instance.OnCatch;
         }
 
         /// <summary>
@@ -510,6 +565,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private List<IPlayer2Actions> m_Player2ActionsCallbackInterfaces = new List<IPlayer2Actions>();
     private readonly InputAction m_Player2_Move;
     private readonly InputAction m_Player2_Shoot;
+    private readonly InputAction m_Player2_Catch;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player2".
     /// </summary>
@@ -529,6 +585,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player2/Shoot".
         /// </summary>
         public InputAction @Shoot => m_Wrapper.m_Player2_Shoot;
+        /// <summary>
+        /// Provides access to the underlying input action "Player2/Catch".
+        /// </summary>
+        public InputAction @Catch => m_Wrapper.m_Player2_Catch;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -561,6 +621,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Shoot.started += instance.OnShoot;
             @Shoot.performed += instance.OnShoot;
             @Shoot.canceled += instance.OnShoot;
+            @Catch.started += instance.OnCatch;
+            @Catch.performed += instance.OnCatch;
+            @Catch.canceled += instance.OnCatch;
         }
 
         /// <summary>
@@ -578,6 +641,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Shoot.started -= instance.OnShoot;
             @Shoot.performed -= instance.OnShoot;
             @Shoot.canceled -= instance.OnShoot;
+            @Catch.started -= instance.OnCatch;
+            @Catch.performed -= instance.OnCatch;
+            @Catch.canceled -= instance.OnCatch;
         }
 
         /// <summary>
@@ -728,6 +794,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShoot(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Catch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCatch(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player2" which allows adding and removing callbacks.
@@ -750,6 +823,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShoot(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Catch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCatch(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Health" which allows adding and removing callbacks.

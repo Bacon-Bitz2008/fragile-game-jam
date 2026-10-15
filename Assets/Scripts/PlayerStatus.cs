@@ -23,11 +23,13 @@ public class PlayerStatus : MonoBehaviour
     private int playerID;
 
     //public int MaxHealth => maxHealth;
+
     private void Start()
     {
 
 
     }
+
     public int Health
     {
         get => health;
@@ -70,10 +72,27 @@ public class PlayerStatus : MonoBehaviour
         Health = maxHealth;
 
 
+
+
+
+      
+       
+
+
     }
 
     private void Update()
     {
+
+
+
+        
+
+        
+       
+
+        if (health <= 0 && !dead)
+            Die();
 
 
         if(health <= 0)
