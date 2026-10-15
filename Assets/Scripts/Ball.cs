@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Ball : MonoBehaviour
 {
@@ -6,6 +7,8 @@ public class Ball : MonoBehaviour
     [SerializeField] private bool dead;
 
     [SerializeField] private Collider coll;
+
+    private AudioSource audSrc;
 
     private string thrownFrom;
     public void setThrownFrom(string thrownFrom)
@@ -16,7 +19,7 @@ public class Ball : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        audSrc = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -54,6 +57,7 @@ public class Ball : MonoBehaviour
             else if (!dead && (other.gameObject.name != thrownFrom))
             {
                 pm.takeHit();
+                audSrc.Play();
             }
         }
     }
