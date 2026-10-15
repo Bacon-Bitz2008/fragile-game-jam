@@ -49,16 +49,21 @@ public class Ball : MonoBehaviour
            
             PlayerMovement pm = other.GetComponent<PlayerMovement>();
 
-            if (dead && (pm.getBallCount() < pm.getMaxBalls()))
+            if(pm != null)
             {
-                pm.collectBall();
-                Destroy(gameObject);
+                if (dead && (pm.getBallCount() < pm.getMaxBalls()))
+                {
+                    pm.collectBall();
+                    Destroy(gameObject);
+                }
+                else if (!dead && (other.gameObject.name != thrownFrom))
+                {
+                    pm.takeHit();
+                    audSrc.Play();
+                }
             }
-            else if (!dead && (other.gameObject.name != thrownFrom))
-            {
-                pm.takeHit();
-                audSrc.Play();
-            }
+
+            
         }
     }
 

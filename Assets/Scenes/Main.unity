@@ -3746,9 +3746,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 480784611}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 3b3a8dc0c13e895449782ae1d2860af0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canCatch: 0
 --- !u!65 &516318683
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3764,12 +3765,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2, z: 2.5}
+  m_Center: {x: 0, y: 1, z: 2}
 --- !u!4 &516318684
 Transform:
   m_ObjectHideFlags: 0
@@ -4604,8 +4605,8 @@ MonoBehaviour:
   p2h: {fileID: 1728485120}
   p1: {fileID: 1166000023}
   p2: {fileID: 999091483}
-  winTxt: {fileID: 0}
-  winScreen: {fileID: 0}
+  winTxt: {fileID: 1561149007}
+  winScreen: {fileID: 551031573}
   winButtons: {fileID: 343774277}
   pauseScreen: {fileID: 34370058}
   buzzer: {fileID: 600140380}
@@ -13625,9 +13626,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1850527929}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 3b3a8dc0c13e895449782ae1d2860af0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canCatch: 0
 --- !u!65 &1847977245
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13643,12 +13645,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2, z: 2.5}
+  m_Center: {x: 0, y: 1, z: 2}
 --- !u!1 &1850527929
 GameObject:
   m_ObjectHideFlags: 0
